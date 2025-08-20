@@ -1,6 +1,6 @@
-import { AuthService } from "@/lib/services/auth-service";
-import { supabase } from "@/lib/services/supabase";
-import { AuthState, UserCredentials } from "@/types/auth";
+import { AuthService } from "@/features/auth/services/auth-service";
+import { supabase } from "@/utils/supabase/client";
+import { AuthState, UserCredentials } from "@/features/auth/types";
 import { create } from "zustand";
 
 export const useAuthStore = create<AuthState>((set, get) => ({

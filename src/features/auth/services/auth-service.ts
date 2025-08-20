@@ -1,5 +1,9 @@
-import { AuthResponse, UserCredentials } from "@/types/auth";
-import { supabase } from "./supabase";
+'use client'
+
+import { AuthResponse, UserCredentials } from "@/features/auth/types";
+import { createClient } from "@/utils/supabase/client";
+
+const supabase = createClient();
 
 export const AuthService = {
   //User signup
@@ -8,7 +12,8 @@ export const AuthService = {
       const { data, error } = await supabase.auth.signUp({
         email: credentials.email,
         password: credentials.password,
-      });
+      },
+    );
 
       if (error || !data.user) {
         return { success: false, error: error?.message || "Signup failed." };

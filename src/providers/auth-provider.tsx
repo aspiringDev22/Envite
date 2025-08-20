@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from "@/lib/hooks/useAuth"
+import { useAuth } from "@/features/auth/hooks/useAuth"
 import { ReactNode } from "react";
 
 type Props = {

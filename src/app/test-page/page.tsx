@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthService } from "@/lib/services/auth-service";
-import { supabase } from "@/lib/services/supabase";
+import { AuthService } from "@/features/auth/services/auth-service";
+import { supabase } from "@/utils/supabase/client";
 import React, { useEffect } from "react";
 
 export default function TestPage() {
