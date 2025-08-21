@@ -66,6 +66,8 @@ export const AuthService = {
         return { success: false, error: error.message };
       }
 
+      window.location.href = "/login";
+
       return { success: true };
     } catch (error: any) {
       console.log("error singing out", error);
