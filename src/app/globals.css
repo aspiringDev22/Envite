@@ -64,3 +64,20 @@
   --color-dark-600: #212121;
   --color-dark-700: #2a2a2a;
 }
+
+.rdp-root {
+  --rdp-accent-color: blue; /* Use blue as the accent color. */
+}
+[data-theme="dark"] .rdp-root {
+  --rdp-accent-color: yellow; /* Use yellow as the accent color in dark mode. */
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}

@@ -15,7 +15,7 @@ export const EventSchema = z.object({
   // convert string -> Date and customize messages
   date: z.date({
     error: "Please pick the event date.",
-  }),
+  }).optional(),
   singleDayEvent: z.boolean().optional(),
   startTime: z
     .string({ error: "Start time is required." })
