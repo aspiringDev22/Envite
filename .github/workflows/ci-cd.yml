@@ -1,0 +1,190 @@
+# Envite — GitHub Actions CI / CD
+
+This document contains ready-to-drop-in GitHub Actions workflows and supporting guidance to implement CI (PR checks) and CD (deploy on main) for a Next.js + TypeScript + Tailwind(daisyUI) + Supabase project.
+
+---
+
+## Files included (copy these into your repo):
+
+### 1) `.github/workflows/ci.yml`  (CI for PRs & push validation)
+
+```yaml
+name: CI — Lint / Typecheck / Test / Build
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Type-check (TypeScript)
+        run: npm run type-check
+
+      - name: Run unit tests
+        run: npm run test -- --ci --runInBand
+
+      - name: Build (Next.js)
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: .next
+```
+
+### 2) `.github/workflows/deploy.yml`  (Deploy on push to `main`)
+
+> This example deploys using Vercel CLI. If you use Vercel, set `VERCEL_TOKEN` as a repo secret. If you prefer Docker/Registry or another host, swap the `deploy` step accordingly.
+
+```yaml
+name: CD — Deploy to Vercel (on push to main)
+
+on:
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    env:
+      # pass build-time NEXT_PUBLIC_* vars from GitHub Secrets
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Vercel
+        run: npx vercel --prod --confirm --token ${{ secrets.VERCEL_TOKEN }}
+```
+
+
+---
+
+## package.json — useful scripts (add these if missing)
+
+```json
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "type-check": "tsc --noEmit",
+  "test": "jest",
+  "format": "prettier --write ."
+}
+```
+
+---
+
+## Secrets & Environment variables (GitHub repository → Settings → Secrets → Actions)
+
+Create these repo secrets (names used in the workflows above):
+- `VERCEL_TOKEN` — (if you deploy to Vercel) personal token from Vercel account.
+- `NEXT_PUBLIC_SUPABASE_URL` — your Supabase project URL (prefixed by NEXT_PUBLIC so it is available to the client when building).
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — anon public key (safe for client usage).
+- `SUPABASE_SERVICE_ROLE_KEY` — **server-side only** service role key (do NOT expose this to client code; only used in server runtime). Keep this secret.
+- `NEXT_PUBLIC_SUPABASE_PROJECT_REF` — your Supabase project reference (prefixed by NEXT_PUBLIC so it is available to the client when building).
+
+Optional/recommended:
+- `NODE_ENV` — production
+- `SENTRY_DSN` or other monitoring keys
+
+---
+
+## Branch protection & required checks
+
+1. Go to your repo Settings → Branches → Add rule for `main`.
+2. Require pull request reviews before merging.
+3. Require status checks to pass: enable the CI job (you will see it as e.g. `CI — Lint / Typecheck / Test / Build` after first run).
+4. Optionally require signed commits and restrict who can push directly.
+
+This guarantees every change merged to `main` passes CI.
+
+---
+
+## Notes & alternatives
+
+- **Caching:** `actions/setup-node@v3` with `cache: 'npm'` helps speed installs. You can also add `actions/cache` for `.next/cache` to speed builds across runs.
+- **If you don't use Vercel:** replace the `Deploy to Vercel` step with one of:
+  - Build a Docker image and push to registry using `docker/build-push-action` then trigger your cloud deployment.
+  - Use hosting provider CLI (Netlify, Fly, Railway, AWS CodeDeploy, DigitalOcean App Platform, etc.).
+- **Handling environment at runtime:** For server-side secrets (service role keys), use Provider environment variables (Vercel env vars or GitHub Environments) and never expose them to the client. Client-safe keys must be prefixed `NEXT_PUBLIC_`.
+
+---
+
+## Quick debug tips
+
+- View job logs in Actions UI — they are very detailed.
+- Re-run failed jobs, or re-run from failed step (GitHub supports re-run).
+- Add `--verbose` flags to your build/test commands while debugging.
+- If build fails on Actions but works locally, ensure the same Node version and that all secrets required at build-time are present.
+
+---
+## Next steps / improvements
+
+1. Add a separate `staging` workflow/branch and deploy to a staging Vercel project using `VERCEL_TOKEN_STAGING` or `VERCEL_ORG_ID/PROJECT_ID`.
+2. Add integration tests that run against a disposable test DB (Supabase can create projects for testing or use a local Postgres in CI with Docker).
+3. Add monitoring & rollback strategies (Vercel stores every deployment; revert by re-deploying an older commit).
+4. Add Slack/Discord notifications for deploy status using a webhook.
+
+---
+
+If you want, I can also:
+- Generate an alternative `deploy.yml` that builds a Docker image and pushes it to GitHub Packages / Docker Hub and then triggers deployment (useful if you self-host), or
+- Add a `staging` workflow (deploy on pushes to `staging` branch), or
+- Add a GitHub Actions job to run lightweight integration tests against a temporary Supabase instance.
+
+Tell me which variant you want and I will update the workflows (or I can add those files to this document).
