@@ -4,7 +4,6 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { EventSchema } from "@/lib/schemas/event.schema";
 import { DatePickerPopover } from "@/components/ui/DatePicker";
@@ -13,13 +12,11 @@ import { TimePickerPopover } from "@/components/ui/TimePicker";
 type FormValues = z.infer<typeof EventSchema>;
 
 export default function CreateEventPage() {
-  const [startDate, setStartDate] = React.useState<Date>();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    watch,
   } = useForm<FormValues>({
     resolver: zodResolver(EventSchema),
     defaultValues: {
@@ -47,7 +44,7 @@ export default function CreateEventPage() {
   };
 
   // Optional: react to "singleDayEvent" toggling
-  const singleDayEvent = watch("singleDayEvent");
+  // const singleDayEvent = watch("singleDayEvent");
 
   return (
     <div className="flex flex-col justify-center items-center p-6 space-y-6">

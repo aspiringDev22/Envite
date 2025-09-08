@@ -68,7 +68,7 @@ export default function SigninForm() {
           Signin
         </button>
         <p className="text-sm text-white">
-          Don't have an account? <a href="/register">Register</a>
+          New Here? <a href="/register">Register</a>
         </p>
       </div>
     </form>

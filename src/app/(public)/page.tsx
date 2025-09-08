@@ -1,10 +1,8 @@
 'use client';
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter();
    return (
     <div className="min-h-screen text-white">
       <main className="min-h-[90vh] flex items-center justify-center px-6 py-12">
