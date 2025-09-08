@@ -72,12 +72,3 @@
   --rdp-accent-color: yellow; /* Use yellow as the accent color in dark mode. */
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.animate-shimmer {
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
