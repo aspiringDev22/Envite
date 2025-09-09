@@ -10,7 +10,6 @@ export function DatePickerPopover() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -27,7 +26,6 @@ export function DatePickerPopover() {
     };
   }, [open]);
 
-  // Close on escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -45,10 +43,10 @@ export function DatePickerPopover() {
   }, [open]);
 
   return (
-    <div className="relative inline-block bg-[#212121] outline-none w-full" ref={containerRef}>
+    <div className="relative inline-block bg-[#212121] outline-none w-[80%]" ref={containerRef}>
       <button
         type="button"
-        className="btn btn-soft bg-[#212121] border border-[#d3d3d3] w-full justify-start text-left normal-case hover:bg-transparent font-normal focus:outline-none transition-all duration-200"
+        className="btn btn-soft bg-[#373737] border w-full justify-start rounded-lg btn-lg text-left normal-case hover:bg-transparent hover:border-white font-normal focus:outline-none transition-all duration-200"
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -57,7 +55,6 @@ export function DatePickerPopover() {
           <span className={`${selected ? 'text-base-content' : 'text-base-content/60'}`}>
             {selected ? format(selected, "EEEE, MMMM d, yyyy") : "Select a date"}
           </span>
-          {/* Calendar icon */}
           <svg 
             className={`w-4 h-4 text-base-content/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
             fill="none" 
@@ -68,8 +65,6 @@ export function DatePickerPopover() {
           </svg>
         </div>
       </button>
-
-      {/* Calendar popover with animations */}
       {open && (
         <div className="absolute z-50 mt-2 w-full min-w-max">
           <div 
@@ -105,7 +100,6 @@ export function DatePickerPopover() {
               }}
             />
             
-            {/* Quick actions */}
             <div className="border-t border-gray-600 p-3 flex gap-2">
               <button
                 type="button"
