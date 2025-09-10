@@ -66,9 +66,9 @@
 }
 
 .rdp-root {
-  --rdp-accent-color: blue; /* Use blue as the accent color. */
-}
-[data-theme="dark"] .rdp-root {
-  --rdp-accent-color: yellow; /* Use yellow as the accent color in dark mode. */
+  --rdp-accent-color: rgb(241, 241, 241) !important; 
 }
 
+[data-theme="dark"] .rdp-root {
+  --rdp-accent-color: yellow; 
+}

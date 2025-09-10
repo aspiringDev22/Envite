@@ -1,49 +1,69 @@
 import * as z from "zod";
 
-// helper for <input type="datetime-local"> validation
-const isDateTimeLocal = (s: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s);
+const isHHMM = (s: string) => /^(0[1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)$/i.test(s);
 
-export const EventSchema = z.object({
-  title: z
-    .string({ error: "Title is required." })
-    .min(2, "Title must be at least 2 characters.")
-    .max(100, "Title must be 100 characters or fewer."),
-  description: z
-    .string()
-    .max(500, "Description can’t exceed 500 characters.")
-    .optional(),
-  // convert string -> Date and customize messages
-  date: z.date({
-    error: "Please pick the event date.",
-  }).optional(),
-  singleDayEvent: z.boolean().optional(),
-  startTime: z
-    .string({ error: "Start time is required." })
-    .refine(isDateTimeLocal, "Use the format YYYY-MM-DDTHH:MM."),
-  endTime: z
-    .string()
-    .refine((v) => !v || isDateTimeLocal(v), "End time must be YYYY-MM-DDTHH:MM.")
-    .optional(),
-  mapUrl: z.string().url("Enter a valid URL (https://...)").optional(),
-  slug: z
-    .string()
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Only lowercase letters, numbers, and hyphens.")
-    .optional(),
-  location: z
-    .string({ error: "Location is required." })
-    .max(100, "Location must be 100 characters or fewer."),
-})
-.superRefine((data, ctx) => {
-  // cross-field message: endTime must be after startTime
-  if (data.endTime && data.startTime) {
-    const start = new Date(data.startTime);
-    const end = new Date(data.endTime);
-    if (end <= start) {
+export const EventSchema = z
+  .object({
+    title: z
+      .string({ error: "Title is required." })
+      .min(2, "Title must be at least 2 characters.")
+      .max(100, "Title must be 100 characters or fewer."),
+
+    startDate: z.date({ error: "Event start date is required." }),
+
+    startTime: z
+      .string({ error: "Start time is required." })
+      .refine(isHHMM, "Please select a valid start time."),
+
+   location: z
+  .string({ error: "Location is required." })
+  .min(1, "Location is required.") 
+  .max(100, "Location must be 100 characters or fewer."),
+
+
+    endDate: z.date().optional(),
+
+    endTime: z
+      .string()
+      .refine(
+        (v) => !v || isHHMM(v),
+        "Please select a valid end time."
+      )
+      .optional(),
+
+    description: z
+      .string()
+      .max(500, "Description can’t exceed 500 characters.")
+      .optional(),
+
+    mapUrl: z
+  .string()
+  .transform((val) => val === "" ? undefined : val)
+  .optional()
+  .refine((val) => !val || z.string().url().safeParse(val).success, {
+    message: "Enter a valid URL (https://...)"
+  }),
+
+    singleDayEvent: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.endDate && data.startDate && data.endDate < data.startDate) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["endTime"], // attach error to this field
-        message: "End time must be after start time.",
+        path: ["endDate"],
+        message: "End date cannot be before start date.",
       });
     }
-  }
-});
+
+    if (data.endTime && data.startTime) {
+      const start = new Date(data.startTime);
+      const end = new Date(data.endTime);
+      if (end <= start) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["endTime"],
+          message: "End time must be after start time.",
+        });
+      }
+    }
+  });
