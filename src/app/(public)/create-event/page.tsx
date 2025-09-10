@@ -36,7 +36,7 @@ export default function CreateEventPage() {
     mode: "onSubmit",
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = () => {
     reset();
   };
 
