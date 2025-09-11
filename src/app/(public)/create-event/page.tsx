@@ -8,8 +8,8 @@ import "react-day-picker/style.css";
 import { EventSchema } from "@/lib/schemas/event.schema";
 import { DatePickerPopover } from "@/components/ui/DatePicker";
 import { TimePickerPopover } from "@/components/ui/TimePicker";
-import { MdOutlineInsertPhoto } from "react-icons/md";
 import toast from "react-hot-toast";
+import ImageUpload from "@/features/events/components/ImageUpload";
 
 type FormValues = z.infer<typeof EventSchema>;
 
@@ -68,24 +68,7 @@ export default function CreateEventPage() {
         className="space-y-4 flex w-full justify-center gap-[6rem]"
         noValidate
       >
-        <div className="banner w-[30%] flex flex-col items-center justify-center">
-          <div className="img-container w-full flex justify-center w-[400px] h-[400px] border-2 border border-white bg-[#212121] rounded-lg relative">
-            <img
-              src="https://images.pexels.com/photos/1639813/pexels-photo-1639813.jpeg"
-              className="rounded-lg object-cover p-2 w-full h-full"
-              alt=""
-            />
-            <div>
-              <button
-                type="button"
-                className="btn btn-circle absolute bottom-3 right-3 bg-black/60 text-white hover:bg-black/80 transition"
-              >
-                <MdOutlineInsertPhoto size={24} />
-              </button>
-            </div>
-          </div>
-        </div>
-
+        <ImageUpload />
         <div className="event-inputs w-[40%] pl-[5rem]">
           <div className="flex w-full flex-col gap-4">
             <div className="form-control w-96">
