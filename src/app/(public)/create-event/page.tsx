@@ -1,26 +1,24 @@
 "use client";
 
 import * as React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "react-day-picker/style.css";
 import { EventSchema } from "@/lib/schemas/event.schema";
-import { DatePickerPopover } from "@/components/ui/DatePicker";
-import { TimePickerPopover } from "@/components/ui/TimePicker";
 import toast from "react-hot-toast";
 import ImageUpload from "@/features/events/components/ImageUpload";
+import InputForm from "@/features/events/components/InputForm";
 
 type FormValues = z.infer<typeof EventSchema>;
 
 export default function CreateEventPage() {
   const {
-    register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    // formState: { errors, isSubmitting },
     reset,
     setFocus,
-    control,
+    // control,
   } = useForm<FormValues>({
     resolver: zodResolver(EventSchema),
     defaultValues: {
@@ -69,120 +67,7 @@ export default function CreateEventPage() {
         noValidate
       >
         <ImageUpload />
-        <div className="event-inputs w-[40%] pl-[5rem]">
-          <div className="flex w-full flex-col gap-4">
-            <div className="form-control w-96">
-              <input
-                type="text"
-                placeholder="Enter Title"
-                className="w-full h-[52px] bg-transparent border-none outline-none focus:ring-0 input-[xl] text-4xl font-bold text-white"
-                {...register("title")}
-                aria-invalid={errors.title ? "true" : "false"}
-              />
-            </div>
-
-            <ul className="list rounded-box w-100">
-              <li className="list-row pl-0 py-0 mt-2 flex justify-between items-center gap-4">
-                <div className="form-control flex gap-3 w-full">
-                  <Controller
-                    control={control}
-                    name="startDate"
-                    render={({ field }) => (
-                      <DatePickerPopover
-                        value={field.value}
-                        onChange={(d) => field.onChange(d)}
-                        placeholder="Start date"
-                      />
-                    )}
-                  />
-                   <Controller
-                    control={control}
-                    name="startTime"
-                    render={({ field }) => (
-                      <TimePickerPopover
-                        value={field.value}
-                        onChange={(d) => field.onChange(d)}
-                        placeholder="00:00"
-                      />
-                    )}
-                  />
-                </div>
-              </li>
-              <li className="list-row pl-0 py-0 mt-2 flex justify-between items-center gap-4">
-                <div className="form-control flex gap-3 w-full">
-                  <Controller
-                    control={control}
-                    name="endDate"
-                    render={({ field }) => (
-                      <DatePickerPopover
-                        value={field.value}
-                        onChange={(d) => field.onChange(d)}
-                        placeholder="End date"
-                      />
-                    )}
-                  />
-                   <Controller
-                    control={control}
-                    name="endTime"
-                    render={({ field }) => (
-                      <TimePickerPopover
-                        value={field.value}
-                        onChange={(d) => field.onChange(d)}
-                        placeholder="00:00"
-                      />
-                    )}
-                  />
-                </div>
-              </li>
-            </ul>
-
-            <div className="form-control flex flex-col w-96 mt-1">
-              <label className="label text-lg text-[#d3d3d3]">Location</label>
-              <input
-                type="text"
-                className="w-full input input-lg rounded-lg input-bordered font-semibold bg-[#373737] focus:border-[#d3d3d3] focus:ring-0 focus:outline-none"
-                placeholder="Venue / City"
-                {...register("location")}
-                aria-invalid={errors.location ? "true" : "false"}
-              />
-            </div>
-
-            <div className="form-control flex flex-col w-96 mt-1">
-              <label className="label text-lg text-[#d3d3d3]">
-                Map URL (optional)
-              </label>
-              <input
-                type="url"
-                className="w-full input input-lg rounded-lg input-bordered bg-[#373737] focus:border-[#d3d3d3] focus:ring-0 focus:outline-none"
-                placeholder="https://maps.google.com/…"
-                {...register("mapUrl")}
-                aria-invalid={errors.mapUrl ? "true" : "false"}
-              />
-            </div>
-
-            <div className="form-control w-96 mt-1">
-              <label className="label text-lg text-[#d3d3d3]">
-                Description
-              </label>
-              <textarea
-                placeholder="What's the event about?"
-                className="w-full rounded-lg font-semibold textarea resize-none textarea-bordered textarea-xl bg-[#373737] focus:border-[#d3d3d3] focus:ring-0 focus:outline-none"
-                {...register("description")}
-                aria-invalid={errors.description ? "true" : "false"}
-              />
-            </div>
-
-            <div className="form-control mt-1 w-96">
-              <button
-                type="submit"
-                className="w-full btn btn-soft px-4 text-dark bg-[#ECECEC] btn-xl rounded-md active:scale-95 transition-transform"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Creating…" : "Create Event"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <InputForm />
       </form>
     </div>
   );

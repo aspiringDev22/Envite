@@ -4,6 +4,14 @@ import React, { useCallback, useRef, useState } from "react";
 import { MdOutlineInsertPhoto } from "react-icons/md";
 import DeviceUpload from "./DeviceUpload";
 import BrowseUpload from "./BrowseUpload";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ImageUpload({
   onSelect,
@@ -52,54 +60,52 @@ export default function ImageUpload({
 
   return (
     <div className="banner w-[30%] flex flex-col items-center justify-center">
-      <div className="img-container w-full flex justify-center w-[400px] h-[400px] border-2 border border-white bg-[#212121] rounded-lg relative">
+      <div className="img-container w-full flex justify-center w-[400px] h-[400px] border-1 border border-[#62748E] bg-50 rounded-lg relative">
         <img
           src={
             preview ??
             "https://images.pexels.com/photos/1639813/pexels-photo-1639813.jpeg"
           }
-          className="rounded-lg object-cover p-2 w-full h-full"
+          className="rounded-lg object-cover p-3 w-full h-full"
           alt=""
         />
         <div>
-          <label
-            htmlFor="my_modal_7"
-            className="btn btn-circle absolute bottom-3 right-3 bg-black/60 text-white hover:bg-black/80 transition"
-          >
-            <MdOutlineInsertPhoto size={24} />
-          </label>
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                type="button"
+                className="rounded-full absolute bottom-3 right-3 bg-black/40 text-white hover:bg-black/80 transition text-lg p-[4px]"
+              >
+                <MdOutlineInsertPhoto size={32} />
+              </Button>
+            </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <Tabs defaultValue="device" className="w-full">
+                    <TabsList className="mt-3">
+                      <TabsTrigger value="device">
+                        Upload from Device
+                      </TabsTrigger>
+                      <TabsTrigger value="browse">
+                        Browse Remote Images
+                      </TabsTrigger>
+                    </TabsList>
+                  <TabsContent value="device">
+                    <DeviceUpload
+                      openFilePicker={openFilePicker}
+                      handleFileChange={handleFileChange}
+                      fileInputRef={fileInputRef}
+                    />
+                  </TabsContent>
+                  <TabsContent value="browse">
+                    <BrowseUpload confirmRemote={confirmRemote} />
+                  </TabsContent>
+                </Tabs>
+                <DialogDescription>
+                  Make changes to your picture here
+                </DialogDescription>
+              </DialogContent>
+          </Dialog>
         </div>
-      </div>
-
-      <input type="checkbox" id="my_modal_7" className="modal-toggle" />
-      <div
-        className="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Upload or choose image"
-      >
-        <div className="modal-box bg-[#2D2E2C] border border-white/40 text-white max-w-lg py-8 h-[400px]">
-          <div className="tabs tabs-border pl-0 h-full">
-            <DeviceUpload
-              openFilePicker={openFilePicker}
-              handleFileChange={handleFileChange}
-              fileInputRef={fileInputRef}
-            />
-            <BrowseUpload confirmRemote={confirmRemote} />
-          </div>
-
-          <label
-            htmlFor="my_modal_7"
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            role="button"
-          >
-            ✕
-          </label>
-        </div>
-
-        <label className="modal-backdrop" htmlFor="my_modal_7">
-          Close
-        </label>
       </div>
     </div>
   );

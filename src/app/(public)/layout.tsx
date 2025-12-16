@@ -8,7 +8,7 @@ export default function PublicLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex-grow bg-gradient-to-r from-[#1e1d1d] via-[#262626] to-[#1e1d1d]">{children}</div>
+      <div className="flex-grow py-8 bg-neutral-50">{children}</div>
     </div>
   );
 }

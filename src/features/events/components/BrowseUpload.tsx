@@ -1,4 +1,8 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/Input";
+import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function BrowseUpload({
   confirmRemote,
@@ -48,16 +52,10 @@ export default function BrowseUpload({
 
   return (
     <>
-      <input
-        type="radio"
-        name="my_tabs_2"
-        className="tab text-lg font-semibold"
-        aria-label="Browse"
-      />
-      <div className="tab-content border-base-300 bg-[#212121] p-6 overflow-y-auto">
+      <div className="border-base-300 py-2 px-1 my-4 overflow-y-auto">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <input
+            <Input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -68,42 +66,47 @@ export default function BrowseUpload({
                 }
               }}
               placeholder="Search Images"
-              className="input input-bordered w-full bg-[#2b2b2b] text-white hover:bg-[#3a3a3a] focus:ring-0 focus:outline-none focus:border-[#d3d3d3]"
+              className="w-full  focus:ring-0 focus:outline-none focus:border-none"
             />
-            <button
+            <Button
               type="button"
+              variant='outline'
+              size='icon'
               onClick={handleSearch}
-              className="btn btn-soft px-4 text-dark bg-[#ECECEC] btn-md rounded-md active:scale-95 transition-transform"
             >
-              Search
-            </button>
+              <CiSearch size={20} />
+            </Button>
           </div>
 
           {(loading || error) && (
             <div className="min-h-[140px] flex justify-center items-center gap-2">
-              {loading && <span className="loading loading-ring loading-lg"></span>}
+              {loading && <Spinner />}
               {error && <div className="text-sm text-red-400">{error}</div>}
             </div>
           )}
+<div className="overflow-y-auto max-h-[40vh] pr-2">
+  <div className="grid grid-cols-3 gap-3">
+    {photos.map((p) => (
+      <button
+        key={p.id}
+        type="button"
+        className="rounded overflow-hidden focus:outline-none"
+        onClick={(e) => {
+          e.preventDefault();
+          confirmRemote(p.src.large);
+        }}
+        title={`By ${p.photographer}`}
+      >
+        <img
+          src={p.src.small}
+          alt={`photo-${p.id}`}
+          className="w-full aspect-square object-cover"
+        />
+      </button>
+    ))}
+  </div>
+</div>
 
-          <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
-            {photos.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="rounded overflow-hidden focus:outline-none"
-                onClick={(e) => {
-                  e.preventDefault(); 
-                  confirmRemote(p.src.large);
-                  const el = document.getElementById("my_modal_7") as HTMLInputElement | null;
-                  if (el) el.checked = false;
-                }}
-                title={`By ${p.photographer}`}
-              >
-                <img src={p.src.small} alt={`photo-${p.id}`} className="w-full h-44 cursor-pointer object-cover" />
-              </button>
-            ))}
-          </div>
 
           {!loading && photos.length === 0 && debouncedQuery && (
             <div className="text-sm text-[#cfcfcf]">No results for {debouncedQuery}</div>
@@ -113,3 +116,4 @@ export default function BrowseUpload({
     </>
   );
 }
+

@@ -1,5 +1,9 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "../store/auth-store";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
 
 export default function SignupForm() {
   const { email, setEmail, password, setPassword, signUp, checkEmailExists } =
@@ -37,26 +41,36 @@ export default function SignupForm() {
     }
   };
   return (
+   <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle> <h2 className="text-xl font-[500]">
+            Bring people together effortlessly.
+          </h2></CardTitle>
+        <CardDescription>
+          Create | Manage | Share your events with ease.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
     <form className="space-y-4">
       <div className="form-control flex flex-col gap-2">
-        <label className="label">
-          <span className="label-text text-white">Email</span>
-        </label>
-        <input
+        <Label className="label">
+          Email
+        </Label>
+        <Input
           type="text"
           placeholder="Enter your Email"
           className="input input-bordered w-full focus:outline-none"
-          name="email"
+          name="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
       </div>
       <div className="form-control flex flex-col gap-2">
-        <label className="label">
-          <span className="label-text text-white">Password</span>
-        </label>
-        <input
+        <Label className="label">
+          Password
+        </Label>
+        <Input
           type="password"
           placeholder="Enter your password"
           className="input input-bordered w-full focus:outline-none"
@@ -67,17 +81,19 @@ export default function SignupForm() {
         />
       </div>
       <div className="form-control flex flex-col items-center justify-center mt-6 gap-4">
-        <button
+        <Button
           type="submit"
-          className="btn bg-white text-black text-xl rounded-lg font-[500] w-full"
+          className="btn btn-primary w-full"
           onClick={(e: any) => handleSubmit(e)}
         >
-          Signup
-        </button>
-        <p className="text-sm text-white">
-          Already have an account? <a href="/login">Login</a>
+          Register
+        </Button>
+        <p className="text-sm text-black">
+          Existing User? <a href="/login">Login</a>
         </p>
       </div>
     </form>
+      </CardContent>
+    </Card>
   );
 }

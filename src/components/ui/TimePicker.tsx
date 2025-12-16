@@ -53,10 +53,10 @@ export function TimePickerPopover({ value, onChange, placeholder = "00:00" }: Pr
   };
 
   return (
-    <div className="relative inline-block bg-[#212121] outline-none w-[44%]" ref={containerRef}>
+    <div className="relative inline-block bg-[#f9f9f9] outline-none w-[44%]" ref={containerRef}>
       <button
         type="button"
-        className="btn btn-soft bg-[#373737] border w-full justify-start rounded-lg btn-lg text-left normal-case hover:bg-transparent hover:border-white font-normal focus:outline-none transition-all duration-200"
+        className="bg-[#fafafa] text-[#62748E] border w-full justify-start rounded-lg px-4 py-2 text-left normal-case font-normal  transition-all duration-200"
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -79,7 +79,7 @@ export function TimePickerPopover({ value, onChange, placeholder = "00:00" }: Pr
       {open && (
         <div className="absolute z-50 mt-2 left-0 right-0">
           <div
-            className="rounded-lg border-1 border-white/20 bg-[#262626]/98 shadow-xl animate-in fade-in-0 zoom-in-95 duration-200"
+            className="rounded-lg border-1 border-[#62748E]/20 bg-[#fafafa]/100 shadow-xl animate-in fade-in-0 zoom-in-95 duration-200"
             role="dialog"
             aria-label="Time picker"
           >
@@ -88,10 +88,10 @@ export function TimePickerPopover({ value, onChange, placeholder = "00:00" }: Pr
                 <button
                   key={time}
                   type="button"
-                  className={`w-full px-3 mt-1 py-2 text-sm text-left rounded-md cursor-pointer transition-colors duration-150 ${
+                  className={`w-full px-3 mt-1 py-2 text-[#62748E] text-sm text-left rounded-md cursor-pointer transition-colors duration-150 ${
                     selected === time
-                      ? "bg-[#4D4D4D] text-primary-content font-semibold"
-                      : "hover:bg-[#4D4D4D] text-base-content"
+                      ? "bg-[#efefef] text-primary-content font-semibold"
+                      : "hover:bg-[#efefef] text-base-content"
                   }`}
                   onClick={() => handleSelect(time)}
                 >

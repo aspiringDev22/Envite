@@ -1,6 +1,16 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../store/auth-store";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
 
 export default function SigninForm() {
   const { email, password, setEmail, setPassword, signIn } = useAuthStore();
@@ -22,7 +32,7 @@ export default function SigninForm() {
       });
       setEmail("");
       setPassword("");
-      router.push("/");
+      router.push("/create-event");
     } else {
       toast.error(response.error ?? "Signin Failed", {
         duration: 3000,
@@ -30,12 +40,20 @@ export default function SigninForm() {
     }
   };
   return (
+     <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle> <h2 className="text-xl font-[500]">Login to your account</h2></CardTitle>
+        <CardDescription>
+          Enter your email below to login to your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
     <form className="space-y-4">
       <div className="form-control flex flex-col gap-2">
-        <label className="label">
-          <span className="label-text text-white">Email</span>
-        </label>
-        <input
+        <Label className="label">
+          Email
+        </Label>
+        <Input
           type="text"
           placeholder="Enter your Email"
           className="input input-bordered w-full focus:outline-none"
@@ -46,10 +64,10 @@ export default function SigninForm() {
         />
       </div>
       <div className="form-control flex flex-col gap-2">
-        <label className="label">
-          <span className="label-text text-white">Password</span>
-        </label>
-        <input
+        <Label className="label">
+          Password
+        </Label>
+        <Input
           type="password"
           placeholder="Enter your password"
           className="input input-bordered w-full focus:outline-none"
@@ -60,17 +78,19 @@ export default function SigninForm() {
         />
       </div>
       <div className="form-control flex flex-col items-center justify-center mt-6 gap-4">
-        <button
+        <Button
           type="submit"
-          className="btn bg-white text-black text-xl rounded-lg font-[500] w-full active:scale-[0.98] transition-transform duration-150 ease-in-out"
+          className="btn btn-primary w-full"
           onClick={(e: any) => handleSubmit(e)}
         >
           Signin
-        </button>
-        <p className="text-sm text-white">
+        </Button>
+        <p className="text-sm text-black">
           New Here? <a href="/register">Register</a>
         </p>
       </div>
     </form>
+      </CardContent>
+    </Card>
   );
 }

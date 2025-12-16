@@ -47,11 +47,11 @@ export function DatePickerPopover({ value, onChange, id, placeholder = "Select a
   };
 
   return (
-    <div className="relative inline-block bg-[#212121] outline-none w-[77%]" ref={containerRef}>
+    <div className="relative inline-block bg-[#fafafa] outline-none w-[77%]" ref={containerRef}>
       <button
         type="button"
         id={id}
-        className="btn btn-soft bg-[#373737] border w-full justify-start rounded-lg btn-lg text-left normal-case hover:bg-transparent hover:border-white font-normal focus:outline-none transition-all duration-200"
+        className="bg-[#fafafa] text-[#62748E] border w-full justify-start rounded-lg px-4 py-2 text-left normal-case font-normal  transition-all duration-200"
         onClick={() => setOpen((p) => !p)}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -73,24 +73,28 @@ export function DatePickerPopover({ value, onChange, id, placeholder = "Select a
 
       {open && (
         <div className="absolute z-50 mt-2 w-full min-w-max">
-          <div className="rounded-lg border-1 border-white/20 bg-[#262626]/98 shadow-xl animate-in fade-in-0 zoom-in-95 duration-200" role="dialog" aria-label="Date picker">
+          <div className="rounded-lg border-1 border-[#62748E]/20 bg-[#fafafa]/100 shadow-xl animate-in fade-in-0 zoom-in-95 duration-200" role="dialog" aria-label="Date picker">
             <DayPicker
               mode="single"
               selected={selected}
               onSelect={handleSelect}
               disabled={{ before: new Date() }}
-              className="p-4"
+              className="p-4 text-[#62748E]"
+               style={{
+    '--rdp-accent-color': '#62748E',
+    '--rdp-accent-background-color': '#f3f3f3',
+  } as React.CSSProperties}
               modifiersClassNames={{
-                selected: "bg-[#4D4D4D] text-primary-content font-semibold rounded-md shadow-sm",
-                today: "border-1 border-[#4D4D4D] rounded-lg font-semibold",
+                selected: "bg-[#f3f3f3] text-primary-content font-semibold rounded-md shadow-none",
+                today: "rounded-lg font-semibold",
               }}
               classNames={{
-                head_cell: "text-base-content/70 font-medium text-lg w-10 h-10",
-                cell: "w-10 h-10 text-center text-lg relative",
-                button: "w-full h-full hover:bg-base-200 rounded-md transition-colors duration-150 font-medium hover:bg-[#4D4D4D]",
+                head_cell: "text-base-content/70 font-medium text-lg w-8 h-8",
+                cell: "w-8 h-8 text-center text-lg relative",
+                button: "w-full h-full hover:bg-[#F5F5F5] rounded-md duration-150 font-medium hover:bg-[#000] hover:text-white",
                 nav_button: "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
-                nav_button_previous: "text-gray-200 hover:text-white hover:bg-white/10",
-                nav_button_next: "text-gray-200 hover:text-white hover:bg-white/10",
+                nav_button_previous: "text-[#62748E] hover:text-black hover:bg-gray-100", // Changed colors here
+    nav_button_next: "text-[#62748E] hover:text-black hover:bg-gray-100", // Changed colors here
                 caption: "flex justify-center items-center py-2",
                 caption_label: "text-lg font-semibold text-base-content",
                 table: "w-full border-collapse",
